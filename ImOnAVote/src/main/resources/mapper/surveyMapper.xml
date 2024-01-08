@@ -1,1 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.application.ioav.survey.dao.SurveyDAO">
+
+	<select id="getSurveyList" parameterType="hashmap" resultType="SurveyDTO">
+		<choose>
+			<when test='searchKeyword.equals("total")'>
+				SELECT
+						*
+				FROM
+						SURVEY
+				ORDER BY
+						POST_DT DESC
+				LIMIT
+						#{startBoardIdx},#{onePageViewCnt}
+			</when>
+			<otherwise>
+				SELECT
+						*
+				FROM
+						SURVEY
+				WHERE
+					    SURVEY_NM LIKE CONCAT('%',#{searchWord},'%') OR
+						WRITER LIKE CONCAT('%',#{searchWord},'%')
+				ORDER BY
+						POST_DT DESC
+				LIMIT
+						#{startBoardIdx},#{onePageViewCnt}
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="getSurveyDetail" parameterType="long" resultType="SurveyDTO">
+		SELECT
+				*
+		FROM
+				SURVEY
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</select>
+	
+	<select id="kwSearchSurvey" parameterType="String" resultType="String">
+		SELECT
+				KEYWORD
+		FROM
+				SURVEY
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</select>
+	
+	<insert id="insertSurvey" parameterType="SurveyDTO">
+		INSERT INTO SURVEY(
+			SURVEY_NM,
+			WRITER,
+			CONTENT,
+			DUE_DT,
+			KEYWORD,
+			PAY_YN
+		)
+		VALUES(
+			#{surveyNm},
+			#{writer},
+			#{content},
+			#{dueDt},
+			#{keyword},
+			#{payYn}
+		)
+	</insert>
+	
+	<update id="updateSurvey" parameterType="SurveyDTO">
+		UPDATE
+				SURVEY
+		SET
+				SURVEY_NM = #{surveyNm},
+				WRITER = #{writer},
+				CONTENT = #{content},
+				DUE_DT = #{dueDt},
+				KEYWORD = #{keyword},
+				POST_DT = NOW(),
+				PAY_YN = #{payYn}
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</update>
+</mapper>

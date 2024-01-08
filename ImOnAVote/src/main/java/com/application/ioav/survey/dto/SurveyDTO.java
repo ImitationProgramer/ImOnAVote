@@ -9,11 +9,13 @@ import lombok.Data;
 @Data
 @Component
 public class SurveyDTO {
-	private String surveyId;
+	private long surveyId;
 	private String surveyNm;
+	private String writer;
 	private String content;
 	private Date postDt;
 	private Date dueDt;
 	private long givePoint;
 	private String keyword;
+	private String payYn;
 }

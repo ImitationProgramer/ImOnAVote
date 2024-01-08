@@ -12,9 +12,7 @@
 			HP,
 			SMSSTS_YN,
 			EMAIL,
-			EMAILSTS_YN,
-			MEMBER_POINT,
-			VIP_YN
+			EMAILSTS_YN
 		)
 		VALUES(
 			#{memberId},
@@ -25,9 +23,134 @@
 			#{hp},
 			#{smsstsYn},
 			#{email},
-			#{emailstsYn},
-			#{memberPoint},
-			#{vipYn}
+			#{emailstsYn}
 		)
 	</insert>
+	
+	<select id="getCheckValidId" parameterType="String" resultType="String">
+		SELECT
+				MEMBER_ID
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectDuplicatedName" parameterType="MemberDTO" resultType="String">
+		SELECT
+				MEMBER_NM,
+				BIRTH_AT,
+				HP
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_NM = #{memberNm}
+				
+	</select>
+	
+		<select id="selectloginMember" parameterType="String" resultType="MemberDTO">
+		SELECT
+				PASSWD,
+				ACTIVE_YN
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="selectOneMember"  parameterType="String" resultType="MemberDTO">
+		SELECT
+				*
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<update id="updateMember" parameterType="MemberDTO">
+		UPDATE
+				MEMBER
+		<set>
+			<if test='memberNm != null and !memberNm.equals("")'>
+				MEMBER_NM = #{memberNm},
+			</if>
+			<if test='passwd != null and !passwd.equal("")'>
+				PASSWD = #{passwd},
+			</if>
+			<if test='sex != null and !sex.equals("")'>
+				SEX = #{sex},
+			</if>
+			<if test='birthAt != null and !birthAt.equals("")'>
+				BIRTH_AT = #{birthAt},
+			</if>
+			<if test='hp != null and !hp.equals("")'>
+				HP = #{hp},
+			</if>
+			<if test='smsstsYn != null and !smsstsYn.equals("")'>
+				SMSSTS_YN = #{smsstsYn},
+			</if>
+			<if test='email != null and !email.equals("")'>
+				EMAIL = #{email},
+			</if>
+			<if test='emailstsYn != null and !emailstsYn.equals("")'>
+				EMAILSTSYN = #{emailstsYn}
+			</if>
+		</set>
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<update id="updateInacativeMember" parameterType="String">
+		UPDATE
+				MEMBER
+		SET
+				ACTIVE_YN = 'n',
+				INACTIVE_AT = NOW()
+		WHERE
+				MEMBER_ID = #{memberId}
+	</update>
+	
+	<select id="selectListMember" resultType="MemberDTO">
+		SELECT
+				*
+		FROM
+				MEMBER
+	</select>
+	
+	<select id="selectListSearchMember" resultType="MemberDTO">
+		SELECT
+				*
+		FROM
+				MEMBER
+		<where>
+			<if test='searchKeyword.equals("memberId")'>
+				MEMBER_ID LIKE CONCAT ('%' , #{searchWord} , '%')
+			</if>
+			<if test='searchKeyword.equals("memberNm")'>
+				MEMBER_NM LIKE CONCAT ('%' , #{searchWord} , '%')
+			</if>
+			<if test='searchKeyword.equals("avtiveYn")'>
+				ACTIVE_YN = #{searchWord}
+			</if>
+			<if test='searchKeyword.equals("sex")'>
+				SEX = #{searchWord}
+			</if>
+		</where>
+	</select>
+	
+	<select id="selectListInActiveMember" resultType="MemberDTO">
+		<![CDATA[
+			SELECT	MEMBER_ID
+			FROM	MEMBER
+			WHERE	INACTIVE_AT < (SELECT DATE_SUB(CURRENT_DATE ,  INTERVAL 90 DAY))
+		]]>
+	</select>
+	
+	<delete id="deleteMember" parameterType="String">
+		DELETE FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</delete>
+	
 </mapper>

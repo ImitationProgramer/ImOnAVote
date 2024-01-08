@@ -1,5 +1,7 @@
 package com.application.ioav.member.dto;
 
+import java.util.Date;
+
 import org.springframework.stereotype.Component;
 
 import lombok.Data;
@@ -17,6 +19,7 @@ public class MemberDTO {
 	private String smsstsYn;
 	private String email;
 	private String emailstsYn;
+	private String activeYn;
+	private Date inactiveAt;
 	private long memberPoint;
-	private String vipYn;
 }

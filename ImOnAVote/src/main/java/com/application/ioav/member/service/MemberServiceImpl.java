@@ -1,18 +1,25 @@
 package com.application.ioav.member.service;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.application.ioav.member.dao.MemberDAO;
 import com.application.ioav.member.dto.MemberDTO;
 
 @Service
 public class MemberServiceImpl implements MemberService{
+	@Value("${file.repo.path}")
+	private String fileRepositoryPath;
 	
 	@Autowired
 	private MemberDAO memberDAO;
@@ -23,7 +30,19 @@ public class MemberServiceImpl implements MemberService{
 	
 	
 	@Override
-	public void insertMember(MemberDTO memberDTO){
+	public void insertMember(MultipartFile uploadProfile, MemberDTO memberDTO) throws IllegalStateException, IOException{
+		if(!uploadProfile.getOriginalFilename().isEmpty()) {
+			String originalFilename = uploadProfile.getOriginalFilename();
+			memberDTO.setProfileOriginalName(originalFilename);
+			
+			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+			
+			String uploadFile = UUID.randomUUID() + extension;
+			memberDTO.setProfileUUID(uploadFile);
+			
+			uploadProfile.transferTo(new File(fileRepositoryPath + uploadFile));
+		}
+		
 		if(memberDTO.getSmsstsYn() == null)	memberDTO.setSmsstsYn("n");
 		if(memberDTO.getEmailstsYn()==null) memberDTO.setEmailstsYn("n");
 		System.out.println("service : " + memberDTO);
@@ -68,7 +87,22 @@ public class MemberServiceImpl implements MemberService{
 	}
 
 	@Override
-	public void modifyMember(MemberDTO memberDTO){	
+	public void modifyMember(MultipartFile uploadProfile, MemberDTO memberDTO) throws IllegalStateException, IOException{	
+		
+		if(!uploadProfile.getOriginalFilename().isEmpty()) {
+			new File(fileRepositoryPath + memberDTO.getProfileUUID()).delete();
+			
+			String originalFilename = uploadProfile.getOriginalFilename();
+			memberDTO.setProfileOriginalName(originalFilename);
+			
+			String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+			
+			String uploadFile = UUID.randomUUID()+extension;
+			memberDTO.setProfileUUID(uploadFile);
+			
+			uploadProfile.transferTo(new File(fileRepositoryPath + uploadFile));
+		}
+		
 		memberDAO.updateMember(memberDTO);
 		
 	}
@@ -96,6 +130,23 @@ public class MemberServiceImpl implements MemberService{
 		if(!deleteMemberList.isEmpty())
 			for(MemberDTO memberDTO : deleteMemberList)
 				memberDAO.deleteMember(memberDTO.getMemberId());
+	}
+
+	@Override
+	public int getAge(String memberId) {
+		return memberDAO.getAge(memberId);
+	}
+
+	@Override
+	public String getName(String memberId) {
+		return memberDAO.getName(memberId);
+
+	}
+
+	@Override
+	public String getId(String memberId) {
+		
+		return memberDAO.getId(memberId);
 	}
 
 	

@@ -13,11 +13,13 @@ public interface MemberDAO {
 	public String getCheckValidId(String memberId);
 	public String selectDuplicatedName(MemberDTO memberDTO);
 	public MemberDTO selectloginMember(String string);
-
+	public int getAge(String memberId);
+	public String getId(String memberId);
+	public String getName(String memberId);
 	public MemberDTO selectOneMember(String memberId);
 	public void updateMember(MemberDTO memberDTO);
 	public void updateInactiveMember(String memberId);
-	
+
 	public List<MemberDTO> selectListMember();
 	public List<MemberDTO> selectListSearchMember(Map<String,String> searchMap);
 	public List<MemberDTO> selectListInActiveMember();

@@ -12,6 +12,8 @@ public class MemberDTO {
 	
 	private String memberId;
 	private String passwd;
+	private String profileOriginalName;
+	private String profileUUID;
 	private String memberNm;
 	private String sex;
 	private String birthAt;
@@ -22,4 +24,5 @@ public class MemberDTO {
 	private String activeYn;
 	private Date inactiveAt;
 	private long memberPoint;
+
 }

@@ -161,6 +161,10 @@
                   <span id="isValidIdMsg"></span>
                 </div>
                 <div class="mb-3">
+                  <label for="file" class="form-label">프로필</label>
+                  <input type="file" name="uploadProfile" required/>
+                </div>
+                <div class="mb-3">
                   <label for="memberNm" class="form-label">이름</label>
                   <input
                     type="text"
@@ -194,7 +198,7 @@
                   이벤트나 새로운 소식에 관한 E-mail 수신에 동의합니다.
                 </div>
                 <div class="mb-3">
-                	<input 
+                  <input 
                   type="button" 
                   id="isValidNm" 
                   value="명의중복확인"'

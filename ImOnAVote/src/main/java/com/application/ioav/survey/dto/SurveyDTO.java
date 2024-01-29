@@ -8,9 +8,10 @@ import lombok.Data;
 
 @Data
 @Component
-public class SurveyDTO {
+public class SurveyDTO{
 	private long surveyId;
 	private String surveyNm;
+	private long readCnt;
 	private String writer;
 	private String content;
 	private Date postDt;

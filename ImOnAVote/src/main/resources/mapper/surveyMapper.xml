@@ -2,18 +2,57 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.application.ioav.survey.dao.SurveyDAO">
+	
+	<select id="getAllSurveyCnt" parameterType="hashmap" resultType="int">
+    <choose>
+        <when test='searchKeyword.equals("total")'>
+            <choose>
+                <when test='searchWord.equals("")'>
+                    SELECT COUNT(*) FROM SURVEY
+                </when>
+                <otherwise>
+                    SELECT COUNT(*) FROM SURVEY
+                    WHERE SURVEY_NM LIKE CONCAT('%', #{searchWord}, '%') OR
+                          WRITER LIKE CONCAT('%', #{searchWord}, '%')
+                </otherwise>
+            </choose>
+        </when>
+        <otherwise>
+            SELECT COUNT(*) FROM SURVEY
+            
+        </otherwise>
+    </choose>
+</select>
 
+	
 	<select id="getSurveyList" parameterType="hashmap" resultType="SurveyDTO">
 		<choose>
 			<when test='searchKeyword.equals("total")'>
-				SELECT
-						*
-				FROM
-						SURVEY
-				ORDER BY
-						POST_DT DESC
-				LIMIT
-						#{startBoardIdx},#{onePageViewCnt}
+				<choose>
+				    <when test='searchWord.equals("")'>
+						SELECT
+								*
+						FROM
+								SURVEY
+						ORDER BY
+								POST_DT DESC
+						LIMIT
+								#{startBoardIdx},#{onePageViewCnt}
+					</when>
+					<otherwise>
+						SELECT
+								*
+						FROM
+								SURVEY
+						WHERE
+							    SURVEY_NM LIKE CONCAT('%',#{searchWord},'%') OR
+								WRITER LIKE CONCAT('%',#{searchWord},'%')
+						ORDER BY
+								POST_DT DESC
+						LIMIT
+								#{startBoardIdx},#{onePageViewCnt}
+					</otherwise>
+				</choose>
 			</when>
 			<otherwise>
 				SELECT
@@ -21,12 +60,16 @@
 				FROM
 						SURVEY
 				WHERE
-					    SURVEY_NM LIKE CONCAT('%',#{searchWord},'%') OR
+					<if test='searchKeyword.equals("writer")'>
 						WRITER LIKE CONCAT('%',#{searchWord},'%')
+					</if>
+					<if test='searchKeyword.equals("surveyNm")'>
+						SURVEY_NM LIKE CONCAT('%',#{searchWord},'%')
+					</if>
 				ORDER BY
-						POST_DT DESC
-				LIMIT
-						#{startBoardIdx},#{onePageViewCnt}
+					    POST_DT DESC
+			    LIMIT
+			    		#{startBoardIdx}, #{onePageViewCnt}
 			</otherwise>
 		</choose>
 	</select>
@@ -55,6 +98,7 @@
 			WRITER,
 			CONTENT,
 			DUE_DT,
+			GIVE_POINT,
 			KEYWORD,
 			PAY_YN
 		)
@@ -63,6 +107,7 @@
 			#{writer},
 			#{content},
 			#{dueDt},
+			#{givePoint},
 			#{keyword},
 			#{payYn}
 		)
@@ -78,8 +123,91 @@
 				DUE_DT = #{dueDt},
 				KEYWORD = #{keyword},
 				POST_DT = NOW(),
+				GIVE_POINT = #{givePoint},
 				PAY_YN = #{payYn}
 		WHERE
 				SURVEY_ID = #{surveyId}
 	</update>
+	
+	
+	
+	<delete id="deleteSurvey" parameterType="int">
+		DELETE FROM
+				SURVEY
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</delete>
+	
+	<select id="updateReadCnt" parameterType="int" resultType="int">
+		SELECT
+				SURVEY
+		SET
+				READ_CNT = READ_CNT + 1	
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</select>
+	
+	<select id="getCheckPayYn" parameterType="int" resultType="String">
+		SELECT
+				PAY_YN AS payYn
+		FROM
+				SURVEY
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</select>
+
+	<select id="getResultList" parameterType="int" resultType="ResultDTO">
+		SELECT
+				*
+		FROM
+				RESULT
+		WHERE
+				SURVEY_ID = #{surveyId}
+	</select>
+	
+	<select id="getReplyDetail" parameterType="int" resultType="ResultDTO">
+		SELECT
+				*
+		FROM	
+				RESULT
+		WHERE
+				RESULT_ID = #{resultId}
+	</select>
+	
+	<insert id="insertResult" parameterType="ResultDTO">
+		INSERT INTO RESULT(
+			RESULT_ID,
+			USER_ID,
+			SURVEY_ID,
+			ANSWER,
+			DO_YN
+		)
+		VALUES(
+			#{resultId},
+			#{userId},
+			#{surveyId},
+			#{answer},
+			#{doYn}
+		)
+	</insert>
+	
+	<update id="updateResult" parameterType="ResultDTO">
+		UPDATE
+				RESULT
+		SET
+				ANSWER = #{answer},
+				DO_YN = #{doYn}
+		WHERE
+				RESULT_ID = #{resultId}
+	</update>
+	
+	<select id="validResultUserCheck" parameterType="ResultDTO" resultType="String">
+	
+		SELECT
+				DO_YN
+		FROM
+				RESULT
+		WHERE
+				RESULT_ID = #{resultId}
+	</select>
 </mapper>

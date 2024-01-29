@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.application.ioav.search.dao.SearchDAO">
+
+	<insert id="insertSearchKw" parameterType="SearchDTO">
+		INSERT INTO SEARCHRESULT(
+			AGE,
+			KEYWORD
+		)	
+		VALUES(
+			#{age},
+			#{keyword}
+		)
+	
+	</insert>
+
+	
+	<select id="getsearchKeyword" parameterType="SearchDTO">
+		<![CDATA[
+		SELECT
+    			KEYWORD,
+    			COUNT(*) AS frequency
+		FROM
+    			SEARCHRESULT
+		WHERE
+    			AGE >= 20 AND AGE < 30
+		GROUP BY
+    			KEYWORD
+		ORDER BY
+    			frequency DESC
+		LIMIT 1;
+		]]>
+		
+	</select>
+
+	<select id="selectListSearchKw" resultType="SearchDTO">
+		SELECT
+				TIMESTAMPDIFF(YEAR, STR_TO_DATE(BIRTH_AT, '%Y-%m-%d'), CURDATE()) AS AGE
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+		
+	</select>
+</mapper>

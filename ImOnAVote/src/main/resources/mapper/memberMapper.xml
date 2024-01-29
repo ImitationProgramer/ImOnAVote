@@ -6,6 +6,8 @@
 		INSERT INTO MEMBER(
 			MEMBER_ID,
 			PASSWD,
+			PROFILE_ORIGINAL_NAME,
+			PROFILE_UUID,
 			MEMBER_NM,
 			SEX,
 			BIRTH_AT,
@@ -17,6 +19,8 @@
 		VALUES(
 			#{memberId},
 			#{passwd},
+			#{profileOriginalName},
+			#{profileUUID},
 			#{memberNm},
 			#{sex},
 			#{birthAt},
@@ -58,6 +62,31 @@
 				MEMBER_ID = #{memberId}
 	</select>
 	
+	<select id="getAge">
+		SELECT
+				TIMESTAMPDIFF(YEAR, BIRTH_AT,NOW())	
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	
+	<select id="getName">
+		SELECT
+				MEMBER_NM
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
+	<select id="getId">
+		SELECT
+				MEMBER_ID
+		FROM
+				MEMBER
+		WHERE
+				MEMBER_ID = #{memberId}
+	</select>
 	<select id="selectOneMember"  parameterType="String" resultType="MemberDTO">
 		SELECT
 				*
@@ -71,6 +100,12 @@
 		UPDATE
 				MEMBER
 		<set>
+			<if test='profileOriginalName != null and !profileOriginalName.equals("")'>
+				PROFILE_ORIGINAL_NAME = #{profileOriginalName},
+			</if>
+			<if test='profileUUID != null and !profileUUID.equals("")'>
+				PROFILE_UUID = #{profileUUID},
+			</if>
 			<if test='memberNm != null and !memberNm.equals("")'>
 				MEMBER_NM = #{memberNm},
 			</if>
@@ -100,7 +135,7 @@
 				MEMBER_ID = #{memberId}
 	</update>
 	
-	<update id="updateInacativeMember" parameterType="String">
+	<update id="updateInactiveMember" parameterType="String">
 		UPDATE
 				MEMBER
 		SET
@@ -140,7 +175,7 @@
 	
 	<select id="selectListInActiveMember" resultType="MemberDTO">
 		<![CDATA[
-			SELECT	MEMBER_ID
+			SELECT	MEMBER_ID, PROFILE_UUID
 			FROM	MEMBER
 			WHERE	INACTIVE_AT < (SELECT DATE_SUB(CURRENT_DATE ,  INTERVAL 90 DAY))
 		]]>
@@ -152,5 +187,5 @@
 		WHERE
 				MEMBER_ID = #{memberId}
 	</delete>
-	
+
 </mapper>

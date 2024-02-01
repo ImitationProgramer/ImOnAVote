@@ -3,56 +3,13 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
-<html
-  lang="en"
-  class="light-style layout-menu-fixed"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="/assets/"
-  data-template="vertical-menu-template-free"
->
+<html>
+<head>
 <meta charset="UTF-8">
-<title>surveyList</title>
-<style>
-	ul {
-	    list-style:none;
-	    margin:0;
-	    padding:0;
-	}
-	
-	li {
-	    margin: 0 0 0 0;
-	    padding: 0 0 0 0;
-	    border : 0;
-	    float: left;
-	}
-</style>
+<title>modifySurvey</title>
 <script src="/ckeditor/ckeditor.js"></script>
 <script src="/jquery/jquery-3.6.1.min.js"></script>
-<script>
-
-	$().ready(function(){
-		
-		$("#onePageViewCnt").val("${onePageViewCnt}");
-		$("#searchKeyword").val("${searchKeyword}");
-		
-	});
-
-	function getSurveyList(currentPageNumber) {
-		var url = "/boardAdvance/boardList"
-		    url += "?searchKeyword=" +  $("#searchKeyword").val();
-		    url += "&searchWord=" + $("#searchWord").val() 
-		    url += "&onePageViewCnt=" + $("#onePageViewCnt").val();
-		    if (currentPageNumber != null) {
-				url += "&currentPageNumber=" + currentPageNumber;
-		    }
-			
-		location.href = url;
-	
-	}
-	
-</script>
-
+<!DOCTYPE html>
 
 <!-- =========================================================
 * Sneat - Bootstrap 5 HTML Admin Template - Pro | v1.0.0
@@ -66,7 +23,14 @@
 =========================================================
  -->
 <!-- beautify ignore:start -->
-
+<html
+  lang="en"
+  class="light-style layout-menu-fixed"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="/assets/"
+  data-template="vertical-menu-template-free"
+>
   <head>
     <meta charset="utf-8" />
     <meta
@@ -287,21 +251,12 @@
               <div class="navbar-nav align-items-center">
                 <div class="nav-item d-flex align-items-center">
                   <i class="bx bx-search fs-4 lh-0"></i>
-                  <select id="searchKeyword">
-                  	<option value="total">전체검색</option>
-                  	<option value="writer">작성자</option>
-                  	<option value="surveyNm">설문제목</option>
-                  </select>
                   <input
                     type="text"
                     class="form-control border-0 shadow-none"
                     placeholder="Search..."
                     aria-label="Search..."
-                    id="searchWord"
-                    name="searchWord"
-                    value="${searchWord }"
-                  >
-               	  <input type="button" value="검색" onclick="getSurveyList()">
+                  />
                 </div>
               </div>
               <!-- /Search -->
@@ -324,7 +279,7 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="/member/thumbnails?fileName=${memberDTO.profileUUID }" alt="회원사진" class="w-px-40 h-auto rounded-circle" />
+                      <img src="member/thumbnails?fileName=${memberDTO.profileUUID }" alt="회원사진" class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -333,7 +288,7 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="/member/thumbnails?fileName=${memberDTO.profileUUID }" alt="회원사진"  class="w-px-40 h-auto rounded-circle" />
+                              <img src="member/thumbnails?fileName=${memberDTO.profileUUID }" alt="회원사진"  class="w-px-40 h-auto rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
@@ -378,87 +333,29 @@
           <!-- / Navbar -->
 
           <!-- Content wrapper -->
-         <div align="center" style="padding-top: 100px" >
-		<h2> 설문조사 리스트 </h2>
-		<table border="1">
-			<colgroup>
-				<col width="10%">
-				<col width="40%">
-				<col width="20%">
-				<col width="20%">
-				<col width="10%">
-			</colgroup>
-			<tr>
-				<td> 
-					조회 : <span style="color:red">${allBoardCnt}</span>개
-				</td>
-				<td colspan="4" align="right" >
-					<select id="onePageViewCnt" onchange="getSurveyList()" >
-						<option>5</option>
-						<option>7</option>
-						<option>10</option>
-					</select>
-				</td>
-			</tr>
-			<tr align="center">
-					<td>번호</td>
-					<td>제목</td>
-					<td>키워드</td>
+          <div class="content-wrapper" >
+            <!-- Content -->
+
+            <div align="center"> 
+		<h3>사용자 인증 화면입니다</h3>
+		<form action="/survey/surveyAuthentication" method="post">
+			<table border="1">
+				<tr>
 					<td>작성자</td>
-					<td>마감일</td>
-					
-			</tr>
-			<tbody id="surveyList">
-				<c:forEach var="surveyDTO" items="${surveyList }">
-					<tr align="center">
-						<c:set var="startBoardIdx" value="${startBoardIdx = startBoardIdx + 1}"/>
-						<td>${startBoardIdx }</td>
-						<td align="left">
-							<a href="/survey/surveyDetail?surveyId=${surveyDTO.surveyId }">${surveyDTO.surveyNm }</a>
-						</td>
-						<td>${surveyDTO.keyword }</td>
-						<td>${surveyDTO.writer }</td>
-						<td><fmt:formatDate value="${surveyDTO.dueDt }" pattern="yyyy-MM-dd"/></td>
-						
-					</tr>
-				</c:forEach>
-			</tbody>
-			<tr align="right">
-				<td colspan="5">
-					<input type="button" value="글쓰기" onclick="location.href='/survey/addSurvey'">
-				</td>
-			</tr>
-			<tr>
-				<td colspan="5" align="center">			
-					<select id="searchKeyword">
-						<option value="total">전체검색</option>
-						<option value="writer">작성자</option>
-						<option value="subject">제목</option>
-					</select>
-					<input type="text" id="searchWord" name="searchWord" value="${searchWord }">
-					<input type="button" value="검색" onclick="getSurveyList()">
-				</td>
-			</tr>
-		</table>
-		<div style="display: table; margin-left: auto; margin-right: auto">
-			<ul>
-				<c:if test="${startPage > 10}">
-					<li>
-						<a href="javascript:getSurveyList(${startPage - 10})"> 이전 </a>
-					</li> 
-				</c:if>
-				<c:forEach var="i" begin="${startPage }" end="${endPage }">
-					<li>
-						<a href="javascript:getSurveyList(${i })">${i } &nbsp;</a>
-					</li>
-				</c:forEach>
-				<c:if test="${endPage != allPageCnt && endPage >= 10}">
-					<li>
-						<a href="javascript:getSurveyList(${startPage + 10})"> 다음 </a>
-					</li> 
-				</c:if>
-			</ul>
-		</div>
+					<td>${surveyDTO.writer }</td>
+				</tr>
+				<tr>
+					<td>제목</td>
+					<td>${surveyDTO.surveyNm }</td>
+				</tr>
+			</table>
+			<p>
+				<input type="hidden" name="memberId" value="${memberDTO.memberId }" /> 
+				<input type="hidden" name="menu" value="${menu }" /> 
+				<input type="submit" value="인증" />
+				<input type="button" onclick="location.href='/survey/surveyList'" value="목록보기" />
+			</p>
+		</form>
 	</div>
             <!-- / Content -->
 

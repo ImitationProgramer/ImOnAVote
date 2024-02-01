@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.application.ioav.member.dao.MemberDAO;
+import com.application.ioav.member.dto.MemberDTO;
 import com.application.ioav.survey.dao.SurveyDAO;
 import com.application.ioav.survey.dto.ResultDTO;
 import com.application.ioav.survey.dto.SurveyDTO;
@@ -16,10 +18,8 @@ public class SurveyServiceImpl implements SurveyService{
 
 		@Autowired
 		private SurveyDAO surveyDAO;
+
 		
-		/*
-		 * @Autowired private MemberDAO memberDAO;
-		 */
 		@Override
 		public List<SurveyDTO> getSurveyList(Map<String, Object> searchMap){
 			System.out.println(searchMap);
@@ -27,6 +27,7 @@ public class SurveyServiceImpl implements SurveyService{
 		}
 
 		@Override
+		@Transactional
 		public SurveyDTO getSurveyDetail(long surveyId, boolean isIncreaseReadCnt) {
 			if(isIncreaseReadCnt) {
 				surveyDAO.updateReadCnt(surveyId);
@@ -86,6 +87,13 @@ public class SurveyServiceImpl implements SurveyService{
 		@Override
 		public boolean modifyResult(ResultDTO resultDTO) {
 			if(surveyDAO.validResultUserCheck(resultDTO).equals("y"))
+				return true;
+			return false;
+		}
+
+		@Override
+		public boolean checkAuthorizedUser(MemberDTO memberDTO, SurveyDTO surveyDTO) {
+			if(memberDTO.getMemberId().equals(surveyDTO.getWriter()))
 				return true;
 			return false;
 		}

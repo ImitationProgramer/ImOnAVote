@@ -17,7 +17,7 @@ public interface SurveyDAO {
 	public String kwSearchSurvey(String string);
 	public String getPasswd(long boardId);
 
-	/* public String getWriter(String memberId); */
+	public String getWriter(long surveyId);
 	public void insertSurvey(SurveyDTO surveyDTO);
 	public void updateSurvey(SurveyDTO surveyDTO); 
 	public void deleteSurvey(long surveyId); 

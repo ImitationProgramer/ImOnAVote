@@ -2,13 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>modifySurvey</title>
-<script src="/ckeditor/ckeditor.js"></script>
-<script src="/jquery/jquery-3.6.1.min.js"></script>
+
 <!DOCTYPE html>
 
 <!-- =========================================================
@@ -23,14 +17,14 @@
 =========================================================
  -->
 <!-- beautify ignore:start -->
-<html
+ <html
   lang="en"
   class="light-style layout-menu-fixed"
   dir="ltr"
   data-theme="theme-default"
   data-assets-path="/assets/"
   data-template="vertical-menu-template-free"
->
+ >
   <head>
     <meta charset="utf-8" />
     <meta
@@ -38,7 +32,9 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-    <title>Basic Inputs - Forms | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+<script src="/ckeditor/ckeditor.js"></script>
+<script src="/jquery/jquery-3.6.1.min.js"></script>
+    <title>surveyDetail</title>
 
     <meta name="description" content="" />
 
@@ -365,9 +361,22 @@
 			</tr>
 			<tr align="right">
 				<td colspan="2">
-					<input type="button" value="수정"  onclick="location.href='/survey/modifySurvey'">
-					<input type="button" value="삭제"  onclick="location.href='/survey/removeSurvey'">
-					<input type="button" value="메인화면"  onclick="location.href='/member/main'">
+					<input type="button" value="수정"  onclick="location.href='/survey/surveyAuthentication?surveyId=${surveyDTO.surveyId}&menu=update'">
+					<input type="button" value="삭제"  onclick="location.href='/survey/surveyAUthentication?surveyId=${surveyDTO.surveyId}&menu=delete'">
+					<input type="button" value="목록보기"  onclick="location.href='/survey/surveyList'">
+				</td>
+			</tr>
+		</table>
+		
+		<br>
+		<hr>
+		<br>
+		
+		<h4>설문에 답을 해주세요!</h4>
+		<table style="width: 700px;" border="1">
+			<tr>
+				<td align="left">
+					<input type="button" value="설문응답하러가기" onclick="location.href='/survey/addResult?surveyId=${surveyDTO.surveyId }'">
 				</td>
 			</tr>
 		</table>

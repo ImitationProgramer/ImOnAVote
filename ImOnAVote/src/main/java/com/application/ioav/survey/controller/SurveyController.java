@@ -1,6 +1,5 @@
 package com.application.ioav.survey.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.application.ioav.member.dto.MemberDTO;
 import com.application.ioav.member.service.MemberService;
 import com.application.ioav.survey.dto.ResultDTO;
 import com.application.ioav.survey.dto.SurveyDTO;
@@ -103,8 +103,48 @@ public class SurveyController {
 		
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("survey/surveyDetail");
-		mv.addObject("surveyDTO",surveyService.getSurveyDetail(surveyId, true));
+		mv.addObject("surveyDTO",surveyService.getSurveyDetail(surveyId,true));
 		return mv;
+	}
+	
+	@GetMapping("/surveyAuthentication")
+	public ModelAndView surveyAuthentication(@RequestParam("menu") String menu,
+											 @RequestParam("memberId") String memberId,
+											 @RequestParam("surveyId") long surveyId) {
+		ModelAndView mv = new ModelAndView();
+		mv.setViewName("survey/surveyAuthentication");
+		mv.addObject("memberDTO", memberService.getMemberDetail(memberId));
+		mv.addObject("surveyDTO", surveyService.getSurveyDetail(surveyId, true));
+		mv.addObject("menu",menu);
+		return mv;
+	}
+	
+	@PostMapping("/surveyAuthentication")
+	@ResponseBody
+	public String surveyAuthentication(@RequestParam("menu") String menu,
+									   @ModelAttribute SurveyDTO surveyDTO,
+									   @ModelAttribute MemberDTO memberDTO) {
+		String jsScript = "";
+		if(surveyService.checkAuthorizedUser(memberDTO, surveyDTO)) {
+			if (menu.equals("update")) {
+				jsScript = "<script>";
+				jsScript += "location.href='/survey/modifySurvey?surveyId=" + surveyDTO.getSurveyId() + "';";
+				jsScript += "</script>";
+			}
+			else if (menu.equals("delete")) {
+				jsScript = "<script>";
+				jsScript += "location.href='/survey/removeSurvey?surveyId=" +  surveyDTO.getSurveyId() + "';";
+				jsScript += "</script>";
+			}
+			
+		}
+		else {
+			 jsScript = "<script>";
+			 jsScript += "alert('수정이나 삭제 권한이 없습니다!');";
+			 jsScript += "history.go(-1);";
+			 jsScript += "</script>";
+		}
+		return jsScript;
 	}
 	
 	@GetMapping("/modifySurvey")

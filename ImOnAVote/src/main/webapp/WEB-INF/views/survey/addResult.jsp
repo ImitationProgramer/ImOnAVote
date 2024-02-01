@@ -337,7 +337,7 @@
 
           <!-- Content wrapper -->
           <div class="content-wrapper" >
-          	<form action="/survey/Result" method="post">
+          	<form action="/survey/addResult" method="post">
             <!-- Content -->
 
             <div class="container-xxl flex-grow-1 container-p-y">
@@ -354,7 +354,7 @@
                           class="form-control"
                           id="surveyNm"
                           name="surveyNm"
-                          value="${surveyNm}"
+                          value="${surveyDTO.surveyNm}"
                           readonly
                         />
                   
@@ -373,7 +373,7 @@
                           class="form-control"
                           id="keyword"
                           name="keyword"
-                          value="${keyword}"
+                          value="${surveyDTO.keyword}"
                           readonly
                         />
                        
@@ -396,8 +396,7 @@
                       <div class="mb-3 row">
                         <label for="html5-text-input" class="col-md-2 col-form-label">내용</label>
                         <div class="col-md-10">
-                          <textarea rows="10" cols="50" id="content" name="content" readonly>${content }</textarea>
-						  <script>CKEDITOR.replace("content");</script>
+                          <textarea rows="10" cols="50" id="content" name="content" readonly>${surveyDTO.content }</textarea>
                         </div>
                       </div>
                       <div class="mb-3 row">
@@ -411,7 +410,7 @@
                       <div class="mb-3 row">
                         <label for="html5-number-input" class="col-md-2 col-form-label">제공 포인트</label>
                         <div class="col-md-10">
-                          <input class="form-control" type="number" value="givePoint" name="givePoint" id="givePoint" readonly />
+                          <input class="form-control" type="number" value="${surveyDTO.givePoint}" name="givePoint" id="givePoint" readonly />
                         </div>
                       </div>
                       
@@ -419,8 +418,9 @@
                   </div>
 					   <div class="row">
 					     <div class="lastrow">
+					     	<input type="hidden" name="surveyId" value="${surveyId }">
 							<input type="submit" value="제출" />
-							<input type="button" value="전체게시글보기" onclick="location.href='/member/main'">
+							<input type="button" value="전체게시글보기" onclick="location.href='/survey/surveyList'">
 						 </div>
 					   </div>
                   <!-- File input -->

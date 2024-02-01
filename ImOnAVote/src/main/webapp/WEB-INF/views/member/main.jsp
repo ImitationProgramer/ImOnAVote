@@ -509,7 +509,7 @@
 									<c:set var="startBoardIdx" value="${startBoardIdx = startBoardIdx + 1}"/>
 									<td>${startBoardIdx }</td>
 									<td align="left">
-										<a href="/survey/surveyDetail?boardId=${surveyDTO.surveyId }">${surveyDTO.surveyNm }</a>
+										<a href="/survey/surveyDetail?surveyId=${surveyDTO.surveyId }">${surveyDTO.surveyNm }</a>
 									</td>
 									<td>${surveyDTO.keyword }</td>
 									<td>${surveyDTO.writer }</td>

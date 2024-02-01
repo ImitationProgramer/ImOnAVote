@@ -131,23 +131,23 @@
 	
 	
 	
-	<delete id="deleteSurvey" parameterType="int">
+	<delete id="deleteSurvey" parameterType="long">
 		DELETE FROM
 				SURVEY
 		WHERE
 				SURVEY_ID = #{surveyId}
 	</delete>
 	
-	<select id="updateReadCnt" parameterType="int" resultType="int">
-		SELECT
+	<update id="updateReadCnt" parameterType="long">
+		UPDATE
 				SURVEY
 		SET
 				READ_CNT = READ_CNT + 1	
 		WHERE
 				SURVEY_ID = #{surveyId}
-	</select>
+	</update>
 	
-	<select id="getCheckPayYn" parameterType="int" resultType="String">
+	<select id="getCheckPayYn" parameterType="long" resultType="String">
 		SELECT
 				PAY_YN AS payYn
 		FROM
@@ -156,7 +156,7 @@
 				SURVEY_ID = #{surveyId}
 	</select>
 
-	<select id="getResultList" parameterType="int" resultType="ResultDTO">
+	<select id="getResultList" parameterType="long" resultType="ResultDTO">
 		SELECT
 				*
 		FROM
@@ -165,7 +165,7 @@
 				SURVEY_ID = #{surveyId}
 	</select>
 	
-	<select id="getReplyDetail" parameterType="int" resultType="ResultDTO">
+	<select id="getReplyDetail" parameterType="long" resultType="ResultDTO">
 		SELECT
 				*
 		FROM	
@@ -210,4 +210,6 @@
 		WHERE
 				RESULT_ID = #{resultId}
 	</select>
+	
+
 </mapper>
